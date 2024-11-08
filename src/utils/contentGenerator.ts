@@ -16,9 +16,7 @@ const generateWithAI = async (prompt: string): Promise<string> => {
       headers: {
         'Authorization': `Bearer ${apiToken}`,
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
       },
-      mode: 'cors',
       body: JSON.stringify({
         messages: [
           {
@@ -29,8 +27,7 @@ const generateWithAI = async (prompt: string): Promise<string> => {
             role: 'user',
             content: prompt
           }
-        ],
-        stream: false
+        ]
       })
     });
 
@@ -55,13 +52,11 @@ const generateWithAI = async (prompt: string): Promise<string> => {
     return data.result.response;
   } catch (error) {
     console.error('Error generating content:', error);
-    if (error instanceof Error && error.message.includes('Failed to fetch')) {
-      throw new Error('Unable to connect to AI service. Please check your internet connection and try again.');
-    }
-    throw error instanceof Error ? error : new Error('Failed to generate content. Please try again.');
+    throw new Error('Failed to generate content. Please check your Cloudflare API token and account ID.');
   }
 };
 
+// Rest of the file remains the same...
 const generatePrompt = (topic: string, type: string): string => {
   const prompts = {
     puns: `Generate 5 clever puns about "${topic}".
