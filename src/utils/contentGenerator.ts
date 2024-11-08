@@ -16,7 +16,9 @@ const generateWithAI = async (prompt: string): Promise<string> => {
       headers: {
         'Authorization': `Bearer ${apiToken}`,
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       },
+      mode: 'cors',
       body: JSON.stringify({
         messages: [
           {
@@ -44,7 +46,7 @@ const generateWithAI = async (prompt: string): Promise<string> => {
     const data = await response.json();
     console.log('API Response data:', data);
 
-    // Check the response structure
+    // Check the response structure and return the generated content
     if (!data.result?.response) {
       console.error('Unexpected API response structure:', data);
       throw new Error('Invalid API response format');
@@ -53,6 +55,9 @@ const generateWithAI = async (prompt: string): Promise<string> => {
     return data.result.response;
   } catch (error) {
     console.error('Error generating content:', error);
+    if (error instanceof Error && error.message.includes('Failed to fetch')) {
+      throw new Error('Unable to connect to AI service. Please check your internet connection and try again.');
+    }
     throw error instanceof Error ? error : new Error('Failed to generate content. Please try again.');
   }
 };
